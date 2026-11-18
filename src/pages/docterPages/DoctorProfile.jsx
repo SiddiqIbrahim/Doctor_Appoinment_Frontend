@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import ApiServece from "../../API/ApiServece";
 
@@ -76,9 +75,7 @@ const DoctorProfile = () => {
       alert("Doctor profile updated successfully!");
     } catch (error) {
       console.log(error);
-      alert(
-        error.response?.data?.msg || "Profile update failed"
-      );
+      alert(error.response?.data?.msg || "Profile update failed");
     } finally {
       setSaving(false);
     }
@@ -95,10 +92,8 @@ const DoctorProfile = () => {
   const profile = doctor.doctorProfile;
 
   return (
-    <div className="h-[calc(100vh-64px)] overflow-y-auto bg-slate-50 p-4 md:p-8">
-
-      <div className="max-w-6xl mx-auto">
-
+    <div className="w-full min-h-[calc(100vh-65px)] bg-slate-50 p-3 sm:p-5 md:p-8">
+      <div className="w-full max-w-6xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
@@ -120,9 +115,7 @@ const DoctorProfile = () => {
 
         {/* Personal Information */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
-
           <div className="flex items-center gap-5 mb-6">
-
             <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center text-3xl font-bold text-blue-600">
               {doctor.name?.charAt(0).toUpperCase()}
             </div>
@@ -132,9 +125,7 @@ const DoctorProfile = () => {
                 {doctor.name}
               </h2>
 
-              <p className="text-slate-500">
-                {profile?.specialization}
-              </p>
+              <p className="text-slate-500">{profile?.specialization}</p>
 
               <span className="inline-block mt-2 bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full font-semibold">
                 {profile?.approvalStatus}
@@ -156,7 +147,6 @@ const DoctorProfile = () => {
 
         {/* Professional Information */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-6">
-
           <h2 className="text-xl font-bold text-slate-800 mb-6">
             Professional Information
           </h2>
@@ -164,16 +154,20 @@ const DoctorProfile = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <Info label="Specialization" value={profile?.specialization} />
             <Info label="Qualification" value={profile?.qualification} />
-            <Info label="Experience" value={`${profile?.experience ?? 0} Years`} />
-            <Info label="Consultation Fee" value={`₹${profile?.consultationFee ?? 0}`} />
+            <Info
+              label="Experience"
+              value={`${profile?.experience ?? 0} Years`}
+            />
+            <Info
+              label="Consultation Fee"
+              value={`₹${profile?.consultationFee ?? 0}`}
+            />
             <Info label="Clinic Address" value={profile?.clinicAddress} />
             <Info label="Approval Status" value={profile?.approvalStatus} />
           </div>
 
           <div className="mt-6">
-            <h3 className="font-semibold text-slate-700 mb-2">
-              About Doctor
-            </h3>
+            <h3 className="font-semibold text-slate-700 mb-2">About Doctor</h3>
             <p className="text-slate-500 leading-relaxed">
               {profile?.bio || "No bio available"}
             </p>
@@ -182,14 +176,12 @@ const DoctorProfile = () => {
 
         {/* Certificates */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-
           <h2 className="text-xl font-bold text-slate-800 mb-5">
             Certificates
           </h2>
 
           {profile?.certificates?.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
               {profile.certificates.map((certificate) => (
                 <div
                   key={certificate.id}
@@ -221,7 +213,6 @@ const DoctorProfile = () => {
                   </a>
                 </div>
               ))}
-
             </div>
           ) : (
             <p className="text-slate-500 text-center py-8">
@@ -234,12 +225,9 @@ const DoctorProfile = () => {
       {/* EDIT PROFILE MODAL */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-
           <div className="bg-white w-full max-w-2xl rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
-
             {/* Modal Header */}
             <div className="flex justify-between items-center p-6 border-b border-slate-200 sticky top-0 bg-white z-10">
-
               <div>
                 <h2 className="text-xl font-bold text-slate-800">
                   Edit Doctor Profile
@@ -260,9 +248,7 @@ const DoctorProfile = () => {
 
             {/* Modal Form */}
             <form onSubmit={handleSubmit} className="p-6">
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-
                 <InputField
                   label="Specialization"
                   name="specialization"
@@ -316,12 +302,10 @@ const DoctorProfile = () => {
                     className="w-full border border-slate-300 rounded-lg px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
                   />
                 </div>
-
               </div>
 
               {/* Modal Footer */}
               <div className="flex justify-end gap-3 mt-8">
-
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
@@ -337,13 +321,11 @@ const DoctorProfile = () => {
                 >
                   {saving ? "Saving..." : "Save Changes"}
                 </button>
-
               </div>
             </form>
           </div>
         </div>
       )}
-
     </div>
   );
 };
@@ -359,13 +341,7 @@ const Info = ({ label, value }) => (
 );
 
 // Reusable input component
-const InputField = ({
-  label,
-  name,
-  value,
-  onChange,
-  type = "text",
-}) => (
+const InputField = ({ label, name, value, onChange, type = "text" }) => (
   <div>
     <label className="block text-sm font-medium text-slate-700 mb-2">
       {label}

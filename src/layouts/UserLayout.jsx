@@ -1,12 +1,12 @@
-import React from "react";
-import { Outlet ,Navigate } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Outlet, Navigate } from "react-router-dom";
 import NavBar from "../Componets/NavBar";
 import Sidebar from "../Componets/Sidebar";
-import { useContext } from "react";
 import { AuthContext } from "../authContext";
 
 const UserLayout = () => {
   const { user, authLoading, authedicate } = useContext(AuthContext);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   if (authLoading) {
     return <div className="p-10 text-center">Loading...</div>;
@@ -17,16 +17,17 @@ const UserLayout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Navbar at the top */}
-      <NavBar />
-
-      {/* Sidebar and page content below Navbar */}
-      <div className="flex">
-        <Sidebar role="user" />
-
-        {/* Dynamic content */}
-        <main className="flex-1 p-6 min-w-0">
+    <div className="min-h-screen bg-slate-50 flex flex-col w-full">
+      <NavBar
+        isSidebarOpen={isSidebarOpen}
+        onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
+      />
+      <div className="flex flex-1 w-full min-w-0 relative">
+        <Sidebar
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+        />
+        <main className="flex-1 w-full min-w-0">
           <Outlet />
         </main>
       </div>

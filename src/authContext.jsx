@@ -6,13 +6,39 @@ import { createContext } from "react";
 import { useNavigate } from "react-router-dom";
 export const AuthContext = createContext();
 const AuthProvider = ({ children }) => {
-    const navigate = useNavigate();
-  
+  const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
 
   const [authedicate, setIsAuthendicate] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
+  const [hasUnreadNotification, setHasUnreadNotification] = useState(false);
+
+  const checkUnreadNotifications = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    try {
+      const res = await axios.get(
+        "http://localhost:3000/api/v1/user/notifications/unread-status",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      setHasUnreadNotification(Boolean(res.data?.hasUnread));
+    } catch (err) {
+      // silent catch for unread check
+    }
+  };
+
+  useEffect(() => {
+    if (authedicate && user?.role === "user") {
+      checkUnreadNotifications();
+      const interval = setInterval(checkUnreadNotifications, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [authedicate, user]);
 
   const getProfile = async (token) => {
     const getUser = await axios.get(
@@ -23,19 +49,18 @@ const AuthProvider = ({ children }) => {
         },
       },
     );
-     const profile = getUser.data.user;
-      setUser(profile);
-      setIsAuthendicate(true);
-      console.log("profile", profile)
-      return profile;
-    
+    const profile = getUser.data.user;
+    setUser(profile);
+    setIsAuthendicate(true);
+    console.log("profile", profile);
+    return profile;
   };
 
   const userLogin = async (email, password) => {
     try {
       const response = await axios.post(
         "http://localhost:3000/api/v1/user/login",
-        {email: email, password: password} 
+        { email: email, password: password },
       );
       console.log("response", response.data);
 
@@ -43,16 +68,21 @@ const AuthProvider = ({ children }) => {
         const token = response.data.token;
         localStorage.setItem("token", token);
         const profile = await getProfile(token);
-        return profile                
+        return profile;
       }
+      return null;
     } catch (error) {
-      console.log(error);
-       throw new Error("Login failed");
+      console.log("Login error:", error);
+      const serverMsg =
+        error.response?.data?.msg || error.message || "Login failed";
+      const customErr = new Error(serverMsg);
+      customErr.response = error.response;
+      throw customErr;
     }
   };
   const checkAuth = async () => {
     console.log("hello");
-    
+
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -83,7 +113,20 @@ const AuthProvider = ({ children }) => {
     navigate("/");
   };
   return (
-    <AuthContext.Provider value={{ user, setUser, userLogin, logout, authedicate, authLoading,getProfile}}>
+    <AuthContext.Provider
+      value={{
+        user,
+        setUser,
+        userLogin,
+        logout,
+        authedicate,
+        authLoading,
+        getProfile,
+        hasUnreadNotification,
+        setHasUnreadNotification,
+        checkUnreadNotifications,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
